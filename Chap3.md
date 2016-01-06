@@ -384,3 +384,67 @@ if ((x === 0 && y === 0) || !(z === 0)) {
    n === N; //false
    b === B; //false
 ```
+
+##3.7 원시 타입과 참조 타입
+- 원시타입(undefined, null, 불리언, 숫자, 문자열)은 본래 타입을 바꿀 수 없다
+```javascript
+   var s = "hello";
+   s.toUpperCase(); //"HELLO"를 반환
+   s; //"hello"를 반환, 원래 문자열은 바뀌지 않는다
+```
+- 원시타입은 값으로비교된다
+- undefined, null, 불리언, 숫자는 두 값이 같은 값이 가지고 있다면 같다
+- 문자열은 두 문자열의 길이가 같고 각 인덱스에 있는 문자들이 같으면 같다
+- 객체는 값으로 비교되지 않는다
+- 객체는 참조로 비교된다
+- 같은 객체를 참조하면 같다
+```javascript
+   var o = {x:1}, p = {x:1};
+   o === p; //false
+   var a = [], b = [];
+   a === b; //false
+   
+   var a = [];
+   var b = a;
+   a === b; //true
+   b[0] = 1;
+   a[0]; //1
+   a === b;
+```
+- 객체를 변수에 할당하는 것은 참조를 할당하는 것
+- 객체 혹은 배열의 새로운 복사본을 만드려면 명시적으로 객체의 프로퍼티 또는 배열의 원소를 복사해야한다
+```javascript
+   var a = ["1", "2", "3"];
+   var b = [];
+   for( var i = 0; i < a.length ; i++ ){
+      b[i] = a[i];
+   }
+   
+   //객체,배열을 비교할 때 프로퍼티나 원소를 비교해야한다
+   function equalArray(a,b) {
+      if ( a.length != b.length) return false;
+      
+      for( var i = 0; i<a.length ; i++ ){
+         if( a[i] !== b[i] ) return false;
+      }
+      
+      return true;
+   }
+```
+
+##3.8 타입변환
+- 자바스크립트는 타입에 매우 유연하다
+```javascript
+   10 + " objects" // "10 objects" 숫자 10이 문자열로 변환
+   "7" * "4" // 28 두 문자열이 숫자로 변환
+   var n = 1 - "x" // NaN 문자열 "x"를 숫자로 변환할 수 없다
+   n + " objects" // "NaN objects" 위에서 n이 NaN인데 이 NaN은 문자열 "NaN"으로 변환됨
+```
+- 숫자로 파싱할 수 있는 문자열은 숫자로 반환
+- 앞뒤공백은 허용, but 공백이나 숫자가 아님 누자들이 섞인 경우는 문자열에서 숫자로 변환시 NaN
+- true는 1로 변환, false와 빈문자열""은 0으로 반환
+- 원시타입은 String(), Number(), Boolean()생성자 호출함으로써 레퍼객체로 변환
+- null과 undefined는 변환할 수 없다
+
+##3.8 변환과 동등 비교
+- 
