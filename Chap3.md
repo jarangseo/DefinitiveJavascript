@@ -333,4 +333,54 @@ if ((x === 0 && y === 0) || !(z === 0)) {
 ```
 
 ## 3.4 null과 undefined
-- 
+- typeof(null) === "object"
+- undefined : 초기화 X, 존재하지 않는 객체의 프로퍼티나 배열의 원소에 접근하려고 할 경우
+- typeof(undefined) === "undefined"
+- null == undefined : true
+- null === undefined : false
+
+## 3.5 전역객체
+- 전역객체의 프로퍼티는 자바스크립트 전역에서 사용할 수 있게 정의된 심벌
+- 자바스크립트 인터프리터가 시작할때(웹브라우저가 새로운 페이지를 불러올때) 새로운 전역객체를 만들고 그 프로퍼티들을 초기화
+- undefined, Infinity, NaN과 같은 전역 프로퍼티
+- isNaN(), parseInt(), eval()과 같은 전역함수들
+- Date(), RegExp(), String(), Object(), Array()같은 생성자 함수
+- Math, JSON같은 전역 객체들
+- 최상위 코드(함수의 부분이 아닌 코드)에서 전역 객체 참조 위해 키워드 this사용
+- window객체는 브라우저에 포함된 모든 자바스크립트 코드를 위한 전역 객체
+- window객체는 전역객체를 참조하는 this대신 사용
+- 전역 변수를 선언하면 이 변수는 전역 객체의 프로퍼티가된다
+
+## 3.6 레퍼객체
+- 레퍼객체 : 문자열, 숫자 ,불리언의 프로퍼티에 접근하려 할때 생성되는 임시객체
+- 프로퍼티의 값이 함수일 때 이 함수를 메서드라고 한다
+- 객체 o의 메서드 m은 o.m()이렇게 호출
+```javascript
+   var s = "hello world!";
+   var word = s.substring(s.indexOf(" ")+1, s.length);
+```
+- 문자열 s의 프로퍼티 참조하려고 할때 new String(s)를 호출한것처럼 문자열 값을 객체로 변환
+- 이 객체는 문자열 메서드를 상속하고 프로퍼티를 사용하는데 사용
+- 프로퍼티 참조가 해제되면 임시객체는 메모리에서 회수됨
+- 숫자와 문자열은 임시객체가 Number()혹은 Boolean()생성자가 호출될 때 생성됨
+- null과 undefined의 레퍼객체는 없음
+```javascript
+   var t = "test"; //문자열
+   t.len = 4; //프로퍼티에 할당하고 바로 임시객체를 회수함
+   var s = t.len; //그러므로 프로퍼티를 참조하면 undefined가 출력됨
+```
+- 문자열, 숫자, 불리언은 객체처럼 동작하지만 값을 할당하는 것은 지속되지 않는다
+- 문자열, 숫자, 불리언의 프로퍼티가 읽기 전용, 새로운 프로퍼티를 정의할 수 없다, 일반 객체와 다르다는 것을 기억할 것
+- 명시적으로 레퍼객체를 생성할 수도 있다.
+```javascript
+   var s = "test", n = 1, b = true;
+   var S = new String(s); //string레퍼객체
+   var N = new Number(n); //number레퍼객체
+   var B = new Boolean(b); //boolean레퍼객체
+   s == S; //true
+   n == N; //true
+   b == B; //true
+   s === S; //false
+   n === N; //false
+   b === B; //false
+```
