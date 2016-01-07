@@ -446,5 +446,46 @@ if ((x === 0 && y === 0) || !(z === 0)) {
 - 원시타입은 String(), Number(), Boolean()생성자 호출함으로써 레퍼객체로 변환
 - null과 undefined는 변환할 수 없다
 
-##3.8 변환과 동등 비교
-- 
+##3.8.1 변환과 동등 비교
+```javascript
+   null == undefined // true
+   "0" == 0 // true
+   0 == false // true
+   "0" == false // true
+```
+##3.8.2 명시적 변환
+- Boolean(), Number(), String(), Object()를 사용하기
+- null과 undefined를 제외한 모든 값은 toString()메서드를 가지고 있다
+- 특정 자바스크립트 연산자는 암시적 타입변환을 수행
+- +연산자의 피연산자가 문자열이면 다른 피연산자를 문자열로 변환
+- 단항연산자 +는 피연산자를 숫자로 변환
+- 단항연산자 !는 피연산자를 불리언으로 변환시키고 부정연산을 한다
+```javascript
+   x + "" //String(x)와 같다
+   +x //Number(x)
+   !!x //Boolean(x)
+```
+- number클래스의 toString()메서드에 2에서 36까지 기수를 전달할 수 있다. 디폴트는 10.
+```javascript
+   var n = 17;
+   binary_string = n.toString(2); // "10001"
+   octal_string = "0" + n.toString(8); //"021"
+   hex_string = "0x" + n.toString(16); //0x11"
+```
+- number클래스는 숫자를 문자열로 변환하는 세가지 메서드를 제공
+- 1. toFixed()메서드 : 소수점 이후에 정의된 수와 문자열로 숫자를 변환
+- 2. toExponential()메서드 : 지수표기법을 사용해 소수점 앞에 숫자 하나와 소수점 뒤에 지정된 만큼의 자릿수를 놓는 방식
+- 3. toPrecision()메서드 : 유효자릿수 숫자의 전체 정수 부분을 표시할 정도로 크지 않다면 지수 표기법을 사용
+```javascript
+   var n = 123456.789;
+   n.toFixed(0); //"123457"
+   n.toFixed(1); //"123456.8"
+   n.toFixed(2); //"123456.79"
+   n.toFixed(3); //"123456.789"
+   n.toFixed(4); //"123456.7890"
+   n.toFixed(5); //"123456.78900"
+   n.toExponential(0); //"1e+5"
+   n.toExponential(1); //"1.2e+5"
+   n.toExponential(2); //"1.23e+5"
+   n.toPrecision(10); //"123456.7890"
+```
