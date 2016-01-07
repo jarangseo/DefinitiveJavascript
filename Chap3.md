@@ -476,6 +476,7 @@ if ((x === 0 && y === 0) || !(z === 0)) {
 - 1. toFixed()메서드 : 소수점 이후에 정의된 수와 문자열로 숫자를 변환
 - 2. toExponential()메서드 : 지수표기법을 사용해 소수점 앞에 숫자 하나와 소수점 뒤에 지정된 만큼의 자릿수를 놓는 방식
 - 3. toPrecision()메서드 : 유효자릿수 숫자의 전체 정수 부분을 표시할 정도로 크지 않다면 지수 표기법을 사용
+
 ```javascript
    var n = 123456.789;
    n.toFixed(0); //"123457"
@@ -489,3 +490,161 @@ if ((x === 0 && y === 0) || !(z === 0)) {
    n.toExponential(2); //"1.23e+5"
    n.toPrecision(10); //"123456.7890"
 ```
+- Number()함수 : 10진수정수로만 동작하고 숫자리터럴의 일부가 아닌 문자를 허용하지 않는다
+- parseInt(), parseFloat()함수 : 리터럴의 일부가 숫자가 아니어도 된다
+- parseInt() : 정수로만 변환할 수 있다
+- parseFloat() : 정수와 부동소수점 모두 변환할 수 있다
+```javascript
+   parseInt("3 blind mice"); //3
+   parseFloat(" 3.14 meters"); //3.14
+   parseInt("-12.34"); //-12
+   parseInt("0xFF"); //255
+   parseInt("0xff"); //255
+   parseInt("-0xFF"); //-255
+   parseFloat(".1"); //0.1
+   parseInt("0.1"); //0
+   parseInt(".1"); //NaN
+   parseFloat("$72.47"); //NaN
+   
+   //parseInt()는 기수를 정의하는 인자를 받는다
+   parseInt("11", 2); //3
+   parseInt("ff", 16); //255
+   parseInt("zz", 36); //1295
+   parseInt("077", 8); //63
+   parseInt("077", 10); //77
+```
+
+##3.8.3 객체에서 원시타입으로 변환
+- 모든객체(배열과 함수, 레퍼객체를 포함)는 true로 변환한다
+- new Boolean(false)는 원시타입이 아닌 객체이므로 true로 변환환
+- 1. toString()메서드 : 문자열로 반환
+- Array클래스의 toString()메서드 : 배열 원소를 문자열로 변환하고 원소들 사이에 쉼표를 삽입
+- Function클래스의  toString()메서드 : 함수의 구현 부분을 반환
+- Date클래스의 toString()메서드 : 사람이 읽을 수 있는 날짜와 시간 형태의 문자열 반환
+- RegExp클래스의 toString()메서드 : RegExp리터럴처럼 보이는 문자열로 변환
+```javascript
+   ({x:1, y:2}).toString(); //"[object Object]"
+   [1,2,3].toString(); //"1,2,3"
+   (function(x) { f(x); }).toString(); //"function (x) { f(x); }"
+   /\d+/g.toString(); //"/\d+/g"
+   new Date(2010,0,1).toString(); //"Fri Jan 01 2010 00:00:00 GMT+0900 (KST)"
+```
+- 2.valueOf() : 대부분 객체 그 자신을 반환
+- Date클래스의 valueOf()메서드 : 내부표현으로 된 날짜를 반환
+```javascript
+   var d = new Date(2010, 0, 1);
+   d.valueOf(); //1262271600000
+```
+
+##3.9 변수선언
+- 생략
+
+##3.10 변수의 유효범위
+- 유효범위 : 어떤 변수가 정의되어있는 영역
+- 전역변수의 유효범위는 전역적, 지역변수의 유효범위는 지역적
+```javascript
+   var scope = "global"; // 전역변수
+   function checkscope(){
+      var scope = "local"; // 전역변수와 같은 이름으로 지역변수 선언
+      return scope;
+   }
+   checkscope(); //"local"
+```
+- 전역 유효범위에서는 var사용하지 않고 전역변수를 선언가능
+- 지역변수 선언을 위해서는 var를 사용해야한다
+```javascript
+   scope = "global"; //전역변수 선언
+   
+   function checkscope2() {
+      scope = "local"; //전역변수를 바꿔버렸네!
+      myscope = "local"; //암묵적으로 전역변수 선언
+      return [scope, myscope]; //두변수의 값을 반환
+   }
+   
+   checkscope2(); //["local","local"]:부작용 발견!
+   scope; //"local":전역변수가 바꼈다!
+   myscope; //"local":전역 네임스페이스가 혼란스럽다
+```
+- 각 함수에는 자신만의 유효범위가 있다
+```javascript
+   var scope = "global scope"; //전역변수 선언
+   
+   function checkscope() {
+      var scope = "local scope"; //지역변수
+      function nested(){
+         var scope = "nested scope"; //함수안에 포함된 유효범위의 지역변수
+         return scope; //nested()안의 변수를 반환
+      }
+      return nested(); //두변수의 값을 반환
+   }
+   
+   checkscope(); //"nested scope"
+```
+
+##3.10.1 함수 유효범위와 끌어올림(Hoisting)
+- 자바스크립트는 블록단위 유효범위를 지니지 않고, 함수 유효범위를 지닌다
+```javascript
+   function test(o) {
+      var i = 0; //i는 함수 전체에걸쳐 정의된다
+      if (typeof o == "object") {
+         var j = 0; //j는 블록 뿐 아니라, 함수 전체에 걸쳐 정의된다 
+            for(var k=0; k<10; k++) { //k는 반복문 외에도 함수 전체에 걸쳐 정의된다
+               console.log(k); //0~9까지출력됨
+            }
+         console.log(k); //10
+      }
+      console.log(j); //undefined
+   }
+```
+- 자바스크립트는 함수 안에 있는 모든 변수를 함수 맨 꼭대기로 '끌어올린'것처럼 동작한다
+```javascript
+var scope = "global";
+function f() {
+   console.log(scope); //undefined
+   var scope = "local";
+   console.log(scope); //local
+}
+```
+- 위의 코드에서 함수 내 1행이 undefined로 출력된다
+- 얘기 가리키는 scope는 2행에 보이는 지역변수 scope다
+- 같은 이름의 지역변수에 의해 전역변수가 감춰진것
+- 지역변수가 함수 전체에 걸쳐 정의되었더라도 var문이 실행되고 나서야 초기화되는데 1행에서는 아직 초기화가 안됐으니깐 undefined가 출력되는 것이다. 
+- 위 코드는 아래의 코드와 같다
+
+```javascript
+var scope = "global";
+function f() {
+   var scope;
+   console.log(scope); //scope변수가 존재하지만 아직 "undefined"값
+   scope = "local"; //초기화됨
+   console.log(scope); //local
+}
+```
+- 아래의 코드같은 경우 함수 내에서 전역변수와 같은 이름의 지역변수가 선언되지 않았으므로 전역변수에 바로 접근한 것
+```javascript
+var scope = "global";
+function f() {
+   console.log(scope); //global
+}
+```
+
+##3.10.2 프로퍼티로서의 변수
+```javascript
+   var truevar = 1; //올바르게 선언한 전역변수, 삭제할 수 없다
+   fakevar = 2; //삭제가능한 전역객체의 프로퍼티를 만든다
+   this.fakevar2 = 3; //삭제가능한 전역객체의 프로퍼티를 만든다
+   delete truevar; //false
+   delete fakevar; //true
+   delete fakevar2; //true
+```
+- 자바스크립트 전역변수는 전역객체의 프로퍼티다
+
+##3.10.3유효범위 체인
+- 변수의 유효범위는 변수가 정의된 소스코드의집합
+- 전역변수는 프로그램 전체에 걸쳐 정의됨
+- 지역변수는 함수 내에서 전체에 걸쳐 정의되고, 중첩된 함수 내에서도 정의됨
+- 자바스크립트의 모든 청크(전역 코드 또는 함수)는 그것과 연관된 유효범위 체인을 가지고 있다
+- 최상위 자바스크립트 코드의 경우 단 하나의 전역객체만으로 이루어짐
+- 중첩되지 않은 한 함수의 경우 유효범위 체인은 두개의 객체로 이루어짐
+- 하나는 매개변수와 지역변수를 정의한 객체, 다른 하나는 전역객체
+- 중첩된 함수는 세개 이상 객체를 갖는다
