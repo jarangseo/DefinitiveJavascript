@@ -251,3 +251,231 @@
 - + 연산자는 문자열을 선호
 - 비교연산자는 숫자를 선호, 두 피연산자들이 문자열일 때만 문자열 비교
 - 두 피연산자 중 하나가 NaN이면, 네 종류의 비교 연산자 모두 false를 반환
+
+##4.9.3 in연산자
+- 좌변에 문자열, 우변에 객체나 배열을 받는다
+```javascript
+  var point = {x:1, y:1};
+  "x" in point //true
+  "z" in point //false
+  "toString" in point //true : 상속된 프로퍼티
+  var data =[7,8,9];
+  "0" in data //true : 배열의 0번째 원소
+  1 in data //true : 배열의 1번째 원소
+  3 in data //false : 배열의 3번째 원소
+```
+
+##4.9.4 instanceof연산자
+- 좌변에 객체를, 우변에 객체 클래스의 이름을
+- 좌변에 오는 객체가 우변에 오는 클래스의 인스턴스일 경우 true를 리턴
+```javascript
+  var d = new Date(); //Date()생성자로 새로운 객체 생성
+  d instanceof Date //true : d는 Date()에 의해 생성됨 
+  d instanceof Object //true : 모든 객체는 Object의 인스턴스
+  d instanceof Number //false : d는 number의 객체가 아니다
+  var a = [1,2,3]; // 배열 생성
+  a instanceof Array //true : a는 배열이다
+  a instanceof Object //true : 모든 배열은 객체다
+  a instanceof RegExp //false : 배열은 정규 표현식이 아니다
+```
+- 모든 객체는 Object의 인스턴스
+- 좌변 피연산자가 객체가 아니면 instanceof의 결과는 false
+- 우변 피연산자가 함수가 아니면  TypeError 
+- instanceof의 동작은 프로토타입체인의 개념
+- o instanceof f의 경우 f.prototype을 살펴본 후, o의 프로토타입 체인을 살펴보며 f.prototype값을 찾는다 
+
+##4.10 논리 표현식
+##4.10.1 논리 AND(&&)
+1. 두 피연산자가 불리언일 경우
+- 두 피연산자의 값에 대해 불리언 AND연산 수행
+```javascript
+  x == 0 && y == 0
+```
+- 관계연산자는 &&와 ||보다 우선순위가 높다
+2. 피연산자로 true로 평가되는값, false로 평가되는 값들이 올 경우
+- false로 평가되는 값은 false, null undefined, 0, -0, NaN, ""
+-이 외의 다른 값들(객체포함)은 true로 평가된다
+3. 단락평가
+- &&연산자는 좌변에 있는 첫 번째 피연산자인 표현식을 먼저 평가
+- 이 것이 false로 평가되면 우변의 표현식을 평가하지 않고 false를 리턴
+- 반대로 좌변이 true로 평가되면 전체표현식의 값은 우측 표현식의 값에 따라 달라짐
+```javascript
+  var o = { x : 1 };
+  var p = null;
+  o && o.x; //1 : o가 객체이므로 o.x를 반환
+  p && p.x; //null : p가 null이므로 p.x를 평가하지 않고 null을 반환, p가 true로 평가될 때만 p.x가 실행된다
+  p.x //TypeError : p가 null이므로 p.x를 평가하면 TypeError발생 
+  
+  if ( a == b ) stop(); //아래의 코드와 동일, a==b를 만족할 경우만 stop()함수 호출
+  (a == b ) && stop();
+```
+##4.10.2 논리 OR(||)
+- 두 피연산자 값에 대해 불리언 OR를 수행
+- 여러 값 중 최초로 true로 평가되는 값을 사용할 경우 사용한다
+```javascript
+  var max = max_width || preferences.max_width || 500; 
+  //max_width가 정의되었으면 이것을
+  //아니면 perference객체에 속한 값을 찾아본다
+  //없으면 하드코딩된 상수를 사용한다
+  
+  function copy(o, p) {
+    p = p || {}; //p가 null이면 새롭게 객체를 생성한다
+    ...
+  }
+```
+
+##4.10.3 논리 NOT(!)
+- !연산자는 단항연산자
+- 불리언 값을 반전, 즉 반대로 바꾼다
+- 피연산자를 먼저 불리언으로 바꾸고 반전시킨다
+- !!x와 같이 표현하여 x에 해당하는 불리언값을 얻을수있다
+- !는 우선순위가 가장 높다
+```javascript
+  !(p && q) === !p || !q
+  !(p || q) === !p && !q
+```
+
+##4.11 할당표현식
+```javascript
+  i = 0
+  o.x = 1
+  
+  (a = b) == 0 //할당하고 그 값을 테스트 하기
+  
+  i = j = k = 0; //할당연산이 같은 표현식에서 일어날 경우, 오른쪽에서 왼쪽으로 진행된다
+  //하나의 값을 여러개의 변수에 할당할 수 있다 
+```
+
+##4.11.1 연산을 동반하는 할당
+- +=할당 : 숫자나 문자열에 대해 작동
+```javascript
+  total += scales_tax
+  total = total + scales_tax
+```
+- +=, -=, *=, /=, %=, <<=, >>=, >>>=, &=, |=
+- 아래와 같은 경우 주의
+```javascript
+  data[i++] *= 2; //data[i++]가 한번 평가됨
+  data[i++] = data[i++] *2; //data[i++]가 두번 평가됨 그러므로 위와 같지 않다
+```
+
+##4.12 평가표현식
+##4.12.1 eval()
+- 단 하나의 전달인자를 갖는다
+- 문자열을 전달하면 문자열을 자바스크립트 코드로 해석해 코드에 포함된 마지막 표현식 또는 구문의 값을 반환
+- 해석하지 못하면 SyntaxError가 발생한다
+- 값이 없을 경우는 undefined를 반환
+- eval() 함수의 핵심은 호출되는 시점의 변수 환경을 사용한다는 점
+- eval("x")를 호출하면 선언한 지역변수 x의 값이 반환된다
+- eval("x=1")을 호출하면 지역변수 x의 값을 바꾼다
+- eval("var y = 3")은 새 지역변수 y를 선언한다
+- eval("function f() { return x+!; }")는 지역함수를 선언한다
+
+##4.12.2 전역eval()
+- eval()은 지역변수 값을 바꿀 수 있다
+- 이러한기능은 최적화에 문제가된다
+- 만일 eval()함수가 'eval'이 아닌 다른 이름으로 호출되면 EvalError 예외가 발생한다
+- eval()을 eval이 아닌 다른 이름으로 호출한 경우, 호출된 위치가 최상위 전역 코드 영역일 경우만 문자열을 평가한다
+- 이때 평가되는 코드는 새 전역변수나 함수를 선언, 전역변수를 설정할 수 있다
+- 하짐나 지역변수를 사용, 수정하면 안된다
+- 결국, 인터프리터가 지역코드를 최적화할 때 eval()이 영향을 미치지 않게 된다 
+```javascript
+  var geval = eval;
+  var x = "global", y = "global";
+  function f() {
+    var x = "local";
+    eval("x += 'changed';");
+    return x;
+  }
+  function g() {
+    var y = "local";
+    geval("y += 'changed';");
+    return y;
+  }
+  console.log(f(), x); //localchanged global : 지역변수 값이 변경되었다
+  console.log(g(), y); //local globalchanged : 전역변수 값이 변경되었다
+```
+
+##4.12.3 엄격한 모드의 eval()
+- 실행 시점의 지역 유효범위 내에서만 실행된다
+- 기존에 선언된 지역 변수값을 설정할 수 있지만, 새 변수나 함수를 선언할 수는 없다
+- "eval"을 예약어처럼 만들어서 새값으로 변경(override)할 수 없다
+
+##4.13 기타 연산자들
+##4.13.1 조건부연산자(?:)
+- 자바스크립트의 유일한 3항연산자자
+- 피연산자에는 어떤 타입도 올 수 있다
+- 첫번째 피연산자는 불리언값으로 평가된다
+- 이게 true면 두번째 피연산자가, false면 세번째 피연산자가 평가된다
+```javascript
+  x > 0 ? x : -x //x의 절대값구하기
+  
+  greeting = "hello " + (username ? username : "there");
+  
+  //위의 구문을 if else로 변경시 아래와 같다
+  greeting = "hello ";
+  if(username)
+    greeting += username;
+  else
+    greeting += "there";
+```
+
+##4.13.2 typeof연산자
+- 단항연산자로 피연산자에 어떤 타입이든 올 수 있다
+- 피연산자의 데이터 타입을 가리키는 문자열을 리턴한다
+- x : typeof x
+- undefined : "undefined"
+- null : "object"
+- true 나 false : "boolean"
+- 숫자 또는 NaN : "number"
+- 문자열 : "string"
+- 함수 : "function"
+- 함수가 아닌 객체 : "object"
+- 호스트객체 : "undefined"나 "boolean", "number", "string"을 제외한 구현부 정의 문자열
+
+##4.13.3 delete연산자
+```javascript
+  var o = { x:1, y:2 };
+  delete o.x;
+  "x" in o //false
+  var a = [1,2,3];
+  delete a[2];
+  2 in a //false
+  a.length //3 : 배열길이는 변하지 않는다!!
+```
+- 삭제되면 그 프로퍼티는 더이상 존재하지 않는다
+- 존재하지 않는 프로퍼티에 접근하려하면 undefined가 반환된다
+- 배열의 원소를 삭제하면 빈자리가 생기고 배열의 길이는 변하지 않는다
+- 내장 코어 프로퍼티나 클라이언트 측 프로퍼티는 삭제할 수 없다
+- var문으로 정의한 변수들도 삭제할 수 없다
+- 함수 구문으로 정의된 함수와 함수 매개변수로 선언한 함수 역시 삭제할 수 없다
+```javascript
+  var o = {x:1, y:2};
+  delete o.x; //true
+  typeof o.x; //"undefined" : 존재하지 않는 프로퍼티
+  delete o.x; //true : 존재하지 않는 프로퍼티 삭제 true
+  delete o; //false : 선언된 변수는 삭제할 수없다
+  
+  delete 1; //true
+  this.x = 1; 
+  delete x; //false : 변수x를 지우려고 한다. 엄격한 모드가 아닐때는 true반환
+  
+  x; //1 (책에서는 런타임 에러 발생한다고 되어있음..모냐)
+```
+
+##4.13.4 void연산자
+- 피연산자를 무시하고 undefined를 반환
+- void연산자를 사용하면 피연산자가 버려진다
+```html
+  <a herf="javascript:void window.open();">Open New Window</a> //html a태그 안에 void연산자를 쓸 수 있다
+```
+
+##4.13.5 쉼표(,)연산자
+```javascript
+i=0, j=1, k=2;
+//아래와 같다
+i=0; j=1; k=2;
+
+for(var i=0,j=10; i<j; i++,j--)
+console.log(i+j)
+```
