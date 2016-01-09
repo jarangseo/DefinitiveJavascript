@@ -133,3 +133,192 @@ function 함수이름([전달인자1 [, 전달인자2 [..., 전달인자n]]) {
 
 ##5.4 조건문
 - 조건문은 두 개 이상의 경로로 코드를 분기, 인터프리터는 이 중 반드시 하나의 경로를 따른다
+
+##5.4.1 if
+- 첫번째 형태
+```javascript
+  if(표현식)
+  구문
+```
+
+```javascript
+  if( username == null ) //username이 null이거나 undefined면
+    username = "John Doe";
+```
+- 위와 같은 구문
+```javascript
+if( !username ) //username이 null, undefined, false, 0, "" 또는 NaN일때
+    username = "John Doe";
+```
+- 블록으로 여러 구문 하나로 묶기
+```javascript
+  if(!address) {
+    address = "";
+    message = "Please specify a mailing address.";
+  }
+```
+- 두번째 형태
+```javascript
+  if(표현식)
+    구문1
+  else
+    구문2
+```
+- 예
+```javascript
+  if( n == 1 )
+    console.log("You have 1 new message.");
+  else
+    console.log("You have" + n + "new messages.");
+```
+- 중첩된 if문에서 else사용시 주의할것!
+```javascript
+  i = j = 1;
+  k = 2;
+  if(i == j)
+    if(j == k)
+      console.log("i equals k");
+    else
+      console.log("i doesn't equal j");//틀림!
+```
+- 자바스크립트 인터프리터의 해석은 아래와 같다 
+```javascript
+  if(i == j) {
+    if(j == k)
+      console.log("i equals k");
+    else
+      console.log("i doesn't equal j");
+  }
+```
+- else는 가장 가까운 if문에 속한다
+```javascript
+  if(i == j) {
+    if(j == k) {
+      console.log("i equals k");
+    }
+  }
+  else {
+      console.log("i doesn't equal j");
+  }
+```
+##5.4.2else if
+- 고유의 구문은 아니지만 걍 쓴다
+```javascript
+  if ( n == 1 ) {
+  }
+  else if( n == 2 ) {
+  }
+  else if( n == 3 ) {
+  }
+  else {
+  }
+```
+- 아래의 코드는 위의 코드와 같다
+```javascript
+  if( n == 1 ) {
+  }
+  else {
+    if( n == 2 ){
+    }
+    else {
+      if( n == 3) {
+      }
+      else {
+      }
+    }
+  }
+```
+
+##5.4.3 switch
+- 여러 if문에서 동일한 표현식이 반복되는 문제점을 해결
+```javascript
+switch(구문) {
+  표현식
+}
+
+switch(n) {
+  case 1:
+    break;
+  case 2:
+    break;
+  case 3:
+    break;
+  default:
+    break;
+}
+```
+- break문: 코드의 실행을 중지하고 switch문이나 루프의 끝으로 건너뛰는 역할
+- case문 : 실해하련느 코드의 시작지점을 결정할 뿐 끝나는 지점을 결정하지 않음
+- 함수 내에서 switch문을 사용할 때는 break문 대신 return문을 쓸 수도 있다
+```javascript
+  function convert(x) {
+    switch(typeof x) {
+      case 'number: //주어진 숫자를 16진수 정수로 변환
+        return x.toString(16);
+      case 'string': //문자열을 큰 따옴표로 묶어서 반남
+        return '"' + x + '"';
+      default: //이외의 타입은 문자열로 변환
+        return String(x);
+    }
+  }
+```
+- 대응하는 case를 판별할때는 동등연산자 == 가 아닌 일치연산자 ===가 사용된다 
+- case표현식 안에 함수 호출이나 값 할당 같이 부수효과를 일으키는 표현식 사용해서는 안된다
+- 가장 안전한 방법은 상수 표현식만으로 제한하는 것이다
+- default레이블은 switch구문 내 어디서든 사용 가능하지만 대부분 가장 마지막에 위치시킨다
+
+##5.5루프
+- 루프문은 분기 경로에서 일정 부분의 코드를 실행한 후 다시 해당 분기 경로로 되돌아간다
+##5.5.1 while
+- if문이 기본 분기문, while무니 기본 루프문
+```javascript
+  while( 표현식 )
+    구문
+```
+- 표현식의 값이 true면 구문 이 실행된 후 표현식이 다시 평가된다
+- 인터프리터는 while구문의 표현식이 false로 평가될 때까지 루프의 몸체를 반복
+- while(true)구문을 사용해 무한루프를 만들 수 있따
+- 루프문을 이용해 0부터 9까지 출력
+```javascript
+var count = 0;
+while( count < 10 ) {
+  console.log(count);
+  count++;
+}
+```
+
+##5.5.2 do/while
+- 표현식이 테스트되는 시점이 처음이 아니라 마지막
+- 적어도 한번은 루프의 몸체가 실행된다
+```javascript
+  do
+    구문
+  while(표현식);
+  
+  function printArray(a) {
+    var len = a.length, i = 0;
+    if( len == 0 ) {
+      console.log("empty array");
+    }
+    else {
+      do {
+        console.log(a[i]);
+      } while (++i < len);
+    }
+  }
+```
+- while루프와 달리 do루프틔 끝에는 세미콜론이 붙는다
+
+##5.5.3 for
+```javascript
+  for(초기화 ; 테스트 ; 증가)
+    구문
+```
+-위의 for문과 아래의 while문은 같다
+```javascript
+  초기화;
+  while(테스트) {
+    구문
+    증가;
+  }
+```
