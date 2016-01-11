@@ -322,3 +322,25 @@ while( count < 10 ) {
     증가;
   }
 ```
+- 루프 시작 전에 '초기화'가 있어야한다
+- 초기화 자리에 var를 사용한 변수 선언문도 허용하므로 루프카운터 선언하는 동시에 초기화 가능
+```javascript
+  for(var count = 0; count < 10 ; count++)
+    console.log(count);
+  
+  var i,j;
+  for(i=0,j=10; i<10 ; i++, j--)
+    sum += i*j;
+```
+- 루프변수가 반드시 숫자가 아니어도됨
+```javascript
+  function tail(o) { //링크드 리스트 마지막 객체 o를 반환한다
+    for(; o.next; o = o.next)
+      // o.next가 true로 평가되면 계속 순회한다
+    return o;
+  }
+```
+- for(;;)구문은 while(true)구문과 같은 무한루프 만든다
+
+##5.5.4 for/in
+- 
