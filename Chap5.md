@@ -343,4 +343,85 @@ while( count < 10 ) {
 - for(;;)구문은 while(true)구문과 같은 무한루프 만든다
 
 ##5.5.4 for/in
-- 
+- 날림.. 내머릿속에있기를
+
+##5.6 점프문
+
+##5.6.1 레이블
+
+##5.6.2 break
+
+##5.6.3 continue
+
+##5.6.4 return
+
+##5.6.5 throw
+```javascript
+  function factorial(x) {
+    if(x<0) throw new Error("x must not be negative");
+    for (var f =1 ; x > 1; f *= x, x--) /*비어있음 empty*/
+    return f;
+  }
+  - 예외가 발생하면 정상적인 프로그램 실행을 중단하고 가까운 예외처리기로 이동
+  - 예외처리기는  try/catch/finally 문 중에서 catch절을 사용해 작성한다
+  
+```
+
+##5.6.6 try/catch/finally
+```javascript
+  try {
+    
+  }
+  catch (e) {
+  //try블록에서 예외가 발생한 경우 실행
+  //지역변수e를 이용해 Error객체 또는 다른 값을 참조
+  //이 블록에서는 예외를 처리하거나 무시
+  }
+  finally {
+  //try블록과 관계없이 무조건실행되는 코드들이 위치
+  }
+  
+  //finally문이 없는 try/catch문
+  try {
+    //사용자에게 입력할 번호를 물어본다
+    var n = Number(prompt("Please enter a positive integer", ""));
+    //입력한 숫자가 유효하면 factorial을 계산
+    var f = factorial(n);
+    alert(n + "! = " + f);
+  }
+  catch (ex) {//입력한 숫자가 유효하지 않다면
+    alert(ex);
+  }
+```
+  - finally문은 try블록이 일부라도 실행되면 무조건 실행된다
+  - 만일 인터프리터가 return, continue, break문 등을 만나try블록에서 제어가 벗어날 경우 새 지점으로 이동하기 전에 finally블록이 실행된다 
+
+##5.7 기타 구문
+
+##5.7.1 with
+- 변수의유효범위 체인을 밍시로 변경할 때 쓰인다
+- with(객체) 구문
+- with문을 사용하면 최적화하기 힘들고, 느리므로 가능한 사용하지 말자
+```javascript
+  //보통 html폼에서 어떤엘리먼트 접근 위해 다음과 같이 입력
+  document.forms[0].address.value
+  
+  with(document.form[0]) { //with를 사용하면 form의 프로퍼티 이름 앞에 더이상 document.form[0]을 붙이지 않아도 된다
+    //form엘리먼트에 직접 접근할 수 있다  
+    name.value="";
+    address.value="";
+    email.value="";
+  }
+  
+  //with문을 사용하지 않으면
+  var f = document.forms[0];
+  f.name.value = "":
+  f.address.value = "";
+  f.email.value = "";
+  
+  //객체 o가 프로퍼티 x를 갖고 있다면, 프로퍼티x의 값에 1을 할당한다
+  with(o) x = 1;
+  //객체o에 프로퍼티 x가 없다면 with문과 상관없이 x=1을 할당당
+```
+- with에 의해 추가된 임시객체는 일시적으로 유효범위 체인의 일부가 된다
+
